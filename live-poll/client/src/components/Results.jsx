@@ -1,11 +1,12 @@
 import { useStore } from "../store/StoreProvider";
 import {
-  BarChart3,
+  PieChart,
   Vote,
-  CheckCircle2,
-  MousePointerClick,
-  Clock,
-  Users,
+  BadgeCheck,
+  MousePointer2,
+  Hourglass,
+  Users2,
+  Trophy,
 } from "lucide-react";
 
 function Results({ sendMessage }) {
@@ -19,24 +20,20 @@ function Results({ sendMessage }) {
       optionIndex: idx,
       name: state.name,
     });
-    // Optimistically disable voting buttons
     dispatch({ type: "SET_VOTED" });
   };
 
   if (!state.question) {
     return (
       <div className="card glass-effect results-card slide-in">
-        <h3 className="waiting-pulse">
-          <Clock size={20} />
-          Waiting for host to publish...
-        </h3>
-        <p>
-          <Users
-            size={14}
-            style={{ marginRight: 4, verticalAlign: "middle" }}
-          />
-          You're in room {state.roomId} as {state.name} ({state.role})
-        </p>
+        <div className="waiting-container">
+          <Hourglass size={48} className="animate-pulse-slow icon-muted" />
+          <h3 className="waiting-pulse">Waiting for host...</h3>
+          <p className="room-info-sub">
+            <Users2 size={14} />
+            Room: {state.roomId} • {state.name}
+          </p>
+        </div>
       </div>
     );
   }
@@ -46,24 +43,21 @@ function Results({ sendMessage }) {
   return (
     <div className="card glass-effect results-card slide-in">
       <h2 className="question-title">
-        <BarChart3
-          size={24}
-          style={{ marginRight: 8, verticalAlign: "middle" }}
-        />
+        <PieChart size={24} className="accent-icon" />
         {state.question.text}
       </h2>
 
       {state.role === "player" && !state.hasVoted && (
         <p className="instruction">
-          <MousePointerClick size={16} />
-          Select an option to vote
+          <MousePointer2 size={16} className="animate-bounce-subtle" />
+          Click an option to cast your vote
         </p>
       )}
 
       {state.role === "player" && state.hasVoted && (
-        <p className="instruction fade-in">
-          <CheckCircle2 size={16} />
-          Thanks for voting!
+        <p className="success-msg fade-in">
+          <BadgeCheck size={20} />
+          Your vote has been recorded!
         </p>
       )}
 
@@ -94,12 +88,14 @@ function Results({ sendMessage }) {
                 <div
                   className={`bar-fill ${isWinner ? "winner-bar" : ""}`}
                   style={{ width: `${percentage}%` }}
-                ></div>
+                >
+                  {isWinner && <Trophy size={14} className="winner-icon" />}
+                </div>
 
                 {state.role === "player" && !state.hasVoted && (
                   <div className="vote-overlay">
-                    <Vote size={16} />
-                    Vote
+                    <Vote size={20} />
+                    <span>Confirm Vote</span>
                   </div>
                 )}
               </div>
@@ -108,9 +104,11 @@ function Results({ sendMessage }) {
         })}
       </ul>
 
-      <div className="total-votes">
-        <BarChart3 size={18} />
-        <strong>Total Votes:</strong> {state.totalVotes}
+      <div className="total-votes-footer">
+        <Users2 size={18} />
+        <span>
+          Total Participation: <strong>{state.totalVotes}</strong>
+        </span>
       </div>
     </div>
   );

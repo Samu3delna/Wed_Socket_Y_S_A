@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useStore } from "../store/StoreProvider";
-import { Gamepad2, Crown, LogIn, User, Hash, AlertCircle } from "lucide-react";
+import {
+  User2,
+  Hash,
+  ShieldCheck,
+  Gamepad2,
+  LogIn,
+  AlertTriangle,
+} from "lucide-react";
 
 function Join({ sendMessage }) {
   const { dispatch } = useStore();
@@ -22,52 +29,52 @@ function Join({ sendMessage }) {
     if (!formData.roomId.trim()) return setLocalError("Room ID is required");
 
     sendMessage("JOIN", formData);
-
-    // We update local state to reflect we successfully joined
-    // If there's a backend validation error, the server sends an ERROR
     dispatch({ type: "SET_JOIN_DATA", payload: formData });
   };
 
   return (
     <div className="card glass-effect join-card fade-in">
       <h2>
-        <Gamepad2 size={22} />
-        Welcome to Live Poll
+        <ShieldCheck size={28} className="accent-icon" />
+        Join Room
       </h2>
-      <p>Join a room to vote or host your own poll.</p>
+      <p>Configure your identity to start interacting.</p>
 
       {localError && (
-        <div className="local-error">
-          <AlertCircle size={16} />
+        <div className="local-error shake">
+          <AlertTriangle size={18} />
           {localError}
         </div>
       )}
 
       <form onSubmit={handleJoin} className="form-group">
         <label>
-          <User size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
-          Your Name
+          <div className="label-with-icon">
+            <User2 size={16} />
+            <span>Display Name</span>
+          </div>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            placeholder="E.g., Daniel"
+            placeholder="Introduce your name"
             maxLength={20}
           />
         </label>
 
         <label>
-          <Hash size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
-          Room ID
+          <div className="label-with-icon">
+            <Hash size={16} />
+            <span>Room Access Code</span>
+          </div>
           <input
             type="text"
             name="roomId"
             value={formData.roomId}
             onChange={handleInputChange}
-            placeholder="E.g., Room123"
+            placeholder="Enter Room ID"
             maxLength={10}
-            className="room-input"
           />
         </label>
 
@@ -82,8 +89,8 @@ function Join({ sendMessage }) {
               checked={formData.role === "player"}
               onChange={handleInputChange}
             />
-            <Gamepad2 size={28} />
-            Player
+            <Gamepad2 size={32} />
+            <span>Player</span>
           </label>
           <label
             className={`role-option ${formData.role === "host" ? "active" : ""}`}
@@ -95,14 +102,14 @@ function Join({ sendMessage }) {
               checked={formData.role === "host"}
               onChange={handleInputChange}
             />
-            <Crown size={28} />
-            Host
+            <ShieldCheck size={32} />
+            <span>Host</span>
           </label>
         </div>
 
         <button type="submit" className="btn-primary">
-          <LogIn size={18} />
-          Enter Room
+          <span>Connect Now</span>
+          <LogIn size={20} />
         </button>
       </form>
     </div>

@@ -644,3 +644,139 @@ input[type="text"]:focus {
   background: rgba(88, 129, 87, 0.35);
   color: var(--cream);
 }
+
+/* ═════════════════════════════════════
+   New Icon & Animation Utilities
+   ═════════════════════════════════════ */
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.animate-spin {
+  display: inline-block;
+  animation: spin-slow 2s linear infinite;
+}
+
+.animate-bounce-subtle {
+  display: inline-block;
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.text-success {
+  color: var(--success-color);
+}
+.text-danger {
+  color: var(--danger-color);
+}
+.icon-muted {
+  opacity: 0.4;
+  color: var(--sage);
+}
+
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.accent-icon {
+  color: var(--sage);
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.logo-icon {
+  color: var(--sage);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
+.winner-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+}
+
+.success-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--success-color);
+  background: rgba(129, 199, 132, 0.1);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2rem;
+  font-weight: 600;
+  border: 1px solid rgba(129, 199, 132, 0.2);
+}
+
+.room-info-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+.total-votes-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 1.5rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.waiting-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}

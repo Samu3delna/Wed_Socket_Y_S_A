@@ -1,112 +1,112 @@
-# Live Poll - Real-Time Voting System
+# Sistema de Votación en Tiempo Real - Live Poll
 
-A real-time polling application built with WebSockets, React, and Node.js. Designed with a premium "Nature Green" aesthetic and a highly interactive, responsive interface.
-
----
-
-## Features
-
-- **Real-Time Communication:** Instantaneous data updates across all connected clients via WebSockets (ws library), completely eliminating the need for page reloads.
-- **Role-Based Architecture:** Distinct user workflows for Hosts (poll creators) and Players (voters).
-- **Room Management:** Secure and isolated sessions using unique Room ID codes.
-- **Dynamic Voting System:**
-  - Real-time animated progress bars.
-  - Ability for Players to clear their vote and revote dynamically.
-  - Automatic winner highlighting when participation starts.
-- **Internationalization (i18n):** Native, zero-dependency bilingual support (English and Spanish) via a global state toggle switch.
-- **Premium UI/UX:**
-  - Glassmorphism effects with subtle CSS animations (pulse, spin, bounce).
-  - Modern typography using Inter and Outfit fonts.
-  - Vector iconography exclusively powered by lucide-react (no emojis).
+Una aplicación de encuestas en tiempo real construida con WebSockets, React y Node.js. Diseñada con una estética premium "Nature Green" y una interfaz altamente interactiva y responsiva.
 
 ---
 
-## Technical Stack
+## Características Principales
 
-- **Frontend:** React, Vite, Context API / useReducer (State Management), lucide-react (Icons).
-- **Backend:** Node.js, `ws` (WebSockets).
-- **Styling:** Custom Vanilla CSS with CSS Variables.
+- **Comunicación en Tiempo Real:** Actualizaciones instantáneas de datos en todos los clientes conectados a través de WebSockets (utilizando la librería ws nativa), eliminando por completo la necesidad de recargar la página.
+- **Arquitectura Basada en Roles:** Flujos de trabajo distintos y separados lógicamente para Anfitriones (creadores de la encuesta) y Jugadores (votantes).
+- **Gestión de Salas (Rooms):** Sesiones seguras y aisladas mediante el uso de códigos únicos (Room ID). Múltiples salas pueden operar simultáneamente sin interferencia.
+- **Sistema Dinámico de Votación:**
+  - Barras de progreso y porcentajes animados en tiempo real.
+  - Capacidad para que los Jugadores revoquen su voto y vuelvan a elegir una opción diferente de forma dinámica. El servidor recalcula todo al instante.
+  - Resaltado automático de la opción ganadora en cuanto se registran los votos.
+- **Internacionalización (i18n) Nativa:** Soporte bilingüe completamente sin dependencias de terceros (Inglés y Español) controlado a través de un estado global.
+- **Interfaz y Experiencia de Usuario (UI/UX) Premium:**
+  - Efectos visuales de cristal (Glassmorphism) combinados con animaciones CSS muy pulidas.
+  - Tipografía moderna cargada directamente desde Google Fonts (Inter y Outfit).
+  - Iconografía vectorial profesional impulsada exclusivamente por lucide-react (se ha evitado por completo el uso de emojis clásicos para mantener la consistencia del diseño).
 
 ---
 
-## How to Run the Project (Locally)
+## Stack Tecnológico
 
-### 1. Requirements
+- **Frontend:** React, Vite, Context API junto con useReducer (para el manejo del estado global), lucide-react (para los iconos).
+- **Backend:** Node.js, ws (Librería de WebSockets).
+- **Estilos:** Vanilla CSS puro con configuración por variables (CSS Custom Properties).
 
-Ensure you have Node.js installed on your system.
+---
 
-### 2. Install Dependencies
+## Instrucciones de Instalación y Ejecución Local
 
-You must install the packages for both the client side and the server side. Open your terminal and run the following commands from the project root directory:
+### 1. Requisitos Previos
+
+Asegúrese de tener Node.js instalado en su sistema antes de comenzar.
+
+### 2. Instalación de Dependencias
+
+Es necesario instalar los paquetes tanto para el lado del cliente como para el lado del servidor. Abra su terminal en la raíz del proyecto y ejecute los siguientes comandos:
 
 ```bash
-# Install Client Dependencies
+# Instalar dependencias del Cliente (Frontend)
 cd client
 npm install
 
-# Install Server Dependencies
+# Instalar dependencias del Servidor (Backend)
 cd ../server
 npm install
 ```
 
-### 3. Start the Application
+### 3. Iniciar la Aplicación
 
-You will need to run the client and the server simultaneously. Open two separate terminal windows or tabs:
+Deberá ejecutar el cliente y el servidor de manera simultánea usando dos terminales separadas.
 
-**Terminal 1 (Backend Server):**
+**Terminal 1 (Servidor Backend):**
 
 ```bash
 cd server
 npm start
 ```
 
-Note: The WebSocket server will start on port 8080 (ws://localhost:8080).
+Nota: El servidor de WebSockets se iniciará en el puerto 8080 (escuchando en ws://localhost:8080).
 
-**Terminal 2 (Frontend Client):**
+**Terminal 2 (Cliente Frontend):**
 
 ```bash
 cd client
 npm run dev
 ```
 
-Note: This will start the Vite development server (usually on port 5173).
+Nota: Esto iniciará el entorno de desarrollo de Vite (usualmente en el puerto 5173).
 
 ---
 
-## Core Application Flow (Example)
+## Flujo de Uso Principal
 
-Follow these steps to test the complete real-time architecture:
+Siga estos pasos para probar la arquitectura de la aplicación en tiempo real:
 
-### Step 1: Initialize the Host
+### Paso 1: Inicializar como Anfitrión (Host)
 
-1. Open the application in your browser.
-2. Enter your Name (e.g. "Administrator").
-3. Enter a unique Room ID (e.g. "Boda2026").
-4. Select the "Host" role and click "Connect Now".
-5. In the Host Panel, input a question (e.g. "What is the best dessert?").
-6. Provide up to 4 options (e.g. "Cake", "Ice Cream", "Fruit").
-7. Click "Publish Poll" to broadcast the state to the room.
+1. Abra la aplicación en su navegador web.
+2. Ingrese su Nombre (por ejemplo, "Administrador").
+3. Ingrese un código único para la Sala (por ejemplo, "PROYECTO2026").
+4. Seleccione el rol de "Host" (Anfitrión) y haga clic en conectar.
+5. Dentro del Panel de Control, escriba una pregunta.
+6. Proporcione un mínimo de 2 y un máximo de 4 opciones de respuesta.
+7. Haga clic en Publicar para que la pregunta sea visible para todos los integrantes de la sala.
 
-### Step 2: Join as a Player (Voter)
+### Paso 2: Unirse como Jugador (Votante)
 
-1. Open a new incognito window, tab, or use a completely different device.
-2. Enter your Name (e.g. "Voter 1").
-3. Enter the exact same Room ID used by the Host ("Boda2026").
-4. Select the "Player" role and click "Connect Now".
-5. Upon connecting, the system will instantly push the current active poll to your screen.
+1. Abra una nueva ventana en modo incógnito, una nueva pestaña, o utilice un dispositivo móvil.
+2. Ingrese su Nombre (por ejemplo, "Votante 1").
+3. Ingrese exactamente el mismo código de Sala utilizado por el Anfitrión ("PROYECTO2026").
+4. Seleccione el rol de "Player" (Jugador) y conéctese.
+5. Al conectar, el sistema mostrará inmediatamente la encuesta activa.
 
-### Step 3: Interactive Voting
+### Paso 3: Votación Interactiva
 
-- Click on any option to cast your vote.
-- Notice the animated progress bars update instantly on both the Host's screen and the Player's screen.
-- As a Player, you can click "Revote" to retract your current selection and choose a different option. The server will automatically adjust the counts.
-- Click "Leave Room" at any time to return to the Connection screen.
+- Haga clic en cualquiera de las opciones para emitir su voto.
+- Observe cómo las barras de progreso se actualizan animadamente tanto en su pantalla como en la del Anfitrión.
+- Como Jugador, puede presionar el botón de "Volver a Votar" para deshacer su selección actual y elegir una nueva opción. El servidor descontará su voto anterior automáticamente.
+- Cualquier usuario puede abandonar la sala en cualquier momento y regresar a la pantalla de conexión principal.
 
 ---
 
-## Color Palette (Nature Green Theme)
+## Paleta de Colores Oficial (Tema Nature Green)
 
-The application enforces strict design guidelines based on the following hex codes:
+La aplicación sigue guías de diseño estrictas basadas en los siguientes códigos hexadecimales:
 
 - Sage: #A3B18A
 - Cream: #DAD7CD

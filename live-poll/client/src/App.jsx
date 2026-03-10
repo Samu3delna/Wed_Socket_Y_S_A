@@ -4,9 +4,13 @@ import { useWebSocket } from "./hooks/useWebSocket";
 import Join from "./components/Join";
 import Host from "./components/Host";
 import Results from "./components/Results";
+import { Leaf, Wifi, WifiOff, Loader } from "lucide-react";
 import "./index.css";
 
-const WS_URL = "ws://localhost:8080";
+// In production, connect to the same host; in dev, use localhost:8080
+const WS_URL = import.meta.env.PROD
+  ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}`
+  : "ws://localhost:8080";
 
 function App() {
   const { state, dispatch } = useStore();
@@ -91,11 +95,29 @@ function App() {
     }
   };
 
+  const getStatusIcon = () => {
+    switch (state.connectionState) {
+      case "Connected":
+        return <Wifi size={14} />;
+      case "Reconnecting":
+      case "Connecting":
+        return <Loader size={14} className="spin-icon" />;
+      case "Offline":
+        return <WifiOff size={14} />;
+      default:
+        return <WifiOff size={14} />;
+    }
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>Live Poll</h1>
+        <h1>
+          <Leaf size={32} />
+          Live Poll
+        </h1>
         <div className={`status-badge ${getStatusClass()}`}>
+          {getStatusIcon()}
           {state.connectionState}
           <div className="pulse"></div>
         </div>

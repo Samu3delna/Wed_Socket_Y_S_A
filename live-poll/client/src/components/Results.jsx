@@ -1,4 +1,12 @@
 import { useStore } from "../store/StoreProvider";
+import {
+  BarChart3,
+  Vote,
+  CheckCircle2,
+  MousePointerClick,
+  Clock,
+  Users,
+} from "lucide-react";
 
 function Results({ sendMessage }) {
   const { state, dispatch } = useStore();
@@ -18,8 +26,15 @@ function Results({ sendMessage }) {
   if (!state.question) {
     return (
       <div className="card glass-effect results-card slide-in">
-        <h3 className="waiting-pulse">Waiting for host to publish...</h3>
+        <h3 className="waiting-pulse">
+          <Clock size={20} />
+          Waiting for host to publish...
+        </h3>
         <p>
+          <Users
+            size={14}
+            style={{ marginRight: 4, verticalAlign: "middle" }}
+          />
           You're in room {state.roomId} as {state.name} ({state.role})
         </p>
       </div>
@@ -30,14 +45,26 @@ function Results({ sendMessage }) {
 
   return (
     <div className="card glass-effect results-card slide-in">
-      <h2 className="question-title">{state.question.text}</h2>
+      <h2 className="question-title">
+        <BarChart3
+          size={24}
+          style={{ marginRight: 8, verticalAlign: "middle" }}
+        />
+        {state.question.text}
+      </h2>
 
       {state.role === "player" && !state.hasVoted && (
-        <p className="instruction">Select an option to vote</p>
+        <p className="instruction">
+          <MousePointerClick size={16} />
+          Select an option to vote
+        </p>
       )}
 
       {state.role === "player" && state.hasVoted && (
-        <p className="instruction fade-in">✅ Thanks for voting!</p>
+        <p className="instruction fade-in">
+          <CheckCircle2 size={16} />
+          Thanks for voting!
+        </p>
       )}
 
       <ul className="options-list-grid">
@@ -70,7 +97,10 @@ function Results({ sendMessage }) {
                 ></div>
 
                 {state.role === "player" && !state.hasVoted && (
-                  <div className="vote-overlay">Vote</div>
+                  <div className="vote-overlay">
+                    <Vote size={16} />
+                    Vote
+                  </div>
                 )}
               </div>
             </li>
@@ -79,6 +109,7 @@ function Results({ sendMessage }) {
       </ul>
 
       <div className="total-votes">
+        <BarChart3 size={18} />
         <strong>Total Votes:</strong> {state.totalVotes}
       </div>
     </div>

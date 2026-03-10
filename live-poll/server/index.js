@@ -1,7 +1,59 @@
 const http = require("http");
+const fs = require("fs");
+const path = require("path");
 const WebSocket = require("ws");
 
-const server = http.createServer();
+// ── Static file server (for production) ──
+const STATIC_DIR = path.join(__dirname, "..", "client", "dist");
+const MIME_TYPES = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "application/javascript",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+};
+
+function serveStaticFile(req, res) {
+  let filePath = path.join(
+    STATIC_DIR,
+    req.url === "/" ? "index.html" : req.url,
+  );
+
+  // If the file doesn't exist, serve index.html (SPA fallback)
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(STATIC_DIR, "index.html");
+  }
+
+  const ext = path.extname(filePath);
+  const contentType = MIME_TYPES[ext] || "application/octet-stream";
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      res.end("Not found");
+      return;
+    }
+    res.writeHead(200, { "Content-Type": contentType });
+    res.end(data);
+  });
+}
+
+const server = http.createServer((req, res) => {
+  // In production, serve the built React app
+  if (fs.existsSync(STATIC_DIR)) {
+    serveStaticFile(req, res);
+  } else {
+    // In development, just return a simple message
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("WebSocket server running. Frontend is served by Vite dev server.");
+  }
+});
+
 const wss = new WebSocket.Server({ server });
 
 /**
@@ -73,8 +125,10 @@ wss.on("connection", (ws) => {
 
     if (type === "JOIN") {
       const { roomId, name, role } = payload;
-      if (!roomId || !name || !role) return safeSend(ws, errorMsg("JOIN incompleto."));
-      if (!["player", "host"].includes(role)) return safeSend(ws, errorMsg("Rol inválido."));
+      if (!roomId || !name || !role)
+        return safeSend(ws, errorMsg("JOIN incompleto."));
+      if (!["player", "host"].includes(role))
+        return safeSend(ws, errorMsg("Rol inválido."));
 
       ws.meta = { roomId, name, role };
       const room = getRoom(roomId);
@@ -85,16 +139,20 @@ wss.on("connection", (ws) => {
     }
 
     // A partir de aquí, debe haber JOIN
-    if (!ws.meta.roomId) return safeSend(ws, errorMsg("Debes hacer JOIN primero."));
+    if (!ws.meta.roomId)
+      return safeSend(ws, errorMsg("Debes hacer JOIN primero."));
 
     const roomId = ws.meta.roomId;
     const room = getRoom(roomId);
 
     if (type === "HOST_SET_QUESTION") {
-      if (ws.meta.role !== "host") return safeSend(ws, errorMsg("Solo host puede crear preguntas."));
+      if (ws.meta.role !== "host")
+        return safeSend(ws, errorMsg("Solo host puede crear preguntas."));
       const q = payload.question;
-      if (!q || !q.id || !q.text || !Array.isArray(q.options)) return safeSend(ws, errorMsg("Pregunta inválida."));
-      if (q.options.length < 2 || q.options.length > 4) return safeSend(ws, errorMsg("Opciones deben ser 2 a 4."));
+      if (!q || !q.id || !q.text || !Array.isArray(q.options))
+        return safeSend(ws, errorMsg("Pregunta inválida."));
+      if (q.options.length < 2 || q.options.length > 4)
+        return safeSend(ws, errorMsg("Opciones deben ser 2 a 4."));
 
       room.question = { id: q.id, text: q.text, options: q.options };
       room.counts = new Array(q.options.length).fill(0);
@@ -106,14 +164,19 @@ wss.on("connection", (ws) => {
 
     if (type === "VOTE") {
       const { questionId, optionIndex, name } = payload;
-      if (!room.question) return safeSend(ws, errorMsg("No hay pregunta activa."));
-      if (questionId !== room.question.id) return safeSend(ws, errorMsg("QuestionId no coincide."));
-      if (typeof optionIndex !== "number") return safeSend(ws, errorMsg("optionIndex inválido."));
-      if (optionIndex < 0 || optionIndex >= room.counts.length) return safeSend(ws, errorMsg("Opción fuera de rango."));
+      if (!room.question)
+        return safeSend(ws, errorMsg("No hay pregunta activa."));
+      if (questionId !== room.question.id)
+        return safeSend(ws, errorMsg("QuestionId no coincide."));
+      if (typeof optionIndex !== "number")
+        return safeSend(ws, errorMsg("optionIndex inválido."));
+      if (optionIndex < 0 || optionIndex >= room.counts.length)
+        return safeSend(ws, errorMsg("Opción fuera de rango."));
       if (!name) return safeSend(ws, errorMsg("Nombre requerido para votar."));
 
       const key = `${roomId}:${room.question.id}:${name.trim().toLowerCase()}`;
-      if (room.votedBy.has(key)) return safeSend(ws, errorMsg("Ya votaste en esta pregunta."));
+      if (room.votedBy.has(key))
+        return safeSend(ws, errorMsg("Ya votaste en esta pregunta."));
 
       room.votedBy.add(key);
       room.counts[optionIndex] += 1;
@@ -133,5 +196,5 @@ wss.on("connection", (ws) => {
   });
 });
 
-const PORT = 8080;
-server.listen(PORT, () => console.log(`WS server on ws://localhost:${PORT}`));
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

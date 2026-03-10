@@ -1,5 +1,15 @@
 import { useState } from "react";
 import { useStore } from "../store/StoreProvider";
+import {
+  Settings,
+  Send,
+  Plus,
+  X,
+  AlertCircle,
+  MessageSquare,
+  ListOrdered,
+  DoorOpen,
+} from "lucide-react";
 
 function Host({ sendMessage }) {
   const { state } = useStore();
@@ -41,22 +51,38 @@ function Host({ sendMessage }) {
       question: newQuestion,
     });
 
-    // reset form (optional, could leave it)
+    // reset form
     setQuestionText("");
     setOptions(["", "", ""]);
   };
 
   return (
     <div className="card glass-effect host-card slide-in">
-      <h3>Host Panel</h3>
+      <h3>
+        <Settings size={20} />
+        Host Panel
+      </h3>
       <p>
+        <DoorOpen
+          size={14}
+          style={{ marginRight: 4, verticalAlign: "middle" }}
+        />
         Room: <strong>{state.roomId}</strong>
       </p>
 
-      {localError && <div className="local-error">{localError}</div>}
+      {localError && (
+        <div className="local-error">
+          <AlertCircle size={16} />
+          {localError}
+        </div>
+      )}
 
       <div className="form-group">
         <label>
+          <MessageSquare
+            size={14}
+            style={{ marginRight: 6, verticalAlign: "middle" }}
+          />
           Question
           <input
             type="text"
@@ -66,7 +92,13 @@ function Host({ sendMessage }) {
           />
         </label>
 
-        <label>Options (2-4)</label>
+        <label>
+          <ListOrdered
+            size={14}
+            style={{ marginRight: 6, verticalAlign: "middle" }}
+          />
+          Options (2-4)
+        </label>
         <div className="options-list">
           {options.map((opt, idx) => (
             <div key={idx} className="option-input-row">
@@ -82,7 +114,7 @@ function Host({ sendMessage }) {
                   onClick={() => removeOption(idx)}
                   title="Remove option"
                 >
-                  ✖
+                  <X size={18} />
                 </button>
               )}
             </div>
@@ -90,12 +122,14 @@ function Host({ sendMessage }) {
         </div>
         {options.length < 4 && (
           <button className="btn-secondary" onClick={addOption}>
-            + Add Option
+            <Plus size={16} />
+            Add Option
           </button>
         )}
 
         <button className="btn-primary mt-4" onClick={handleCreatePoll}>
-          🚀 Publish Poll
+          <Send size={18} />
+          Publish Poll
         </button>
       </div>
     </div>

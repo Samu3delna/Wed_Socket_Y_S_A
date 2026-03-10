@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useStore } from "../store/StoreProvider";
+import { Gamepad2, Crown, LogIn, User, Hash, AlertCircle } from "lucide-react";
 
 function Join({ sendMessage }) {
   const { dispatch } = useStore();
@@ -29,13 +30,22 @@ function Join({ sendMessage }) {
 
   return (
     <div className="card glass-effect join-card fade-in">
-      <h2>Welcome to Live Poll</h2>
+      <h2>
+        <Gamepad2 size={22} />
+        Welcome to Live Poll
+      </h2>
       <p>Join a room to vote or host your own poll.</p>
 
-      {localError && <div className="local-error">{localError}</div>}
+      {localError && (
+        <div className="local-error">
+          <AlertCircle size={16} />
+          {localError}
+        </div>
+      )}
 
       <form onSubmit={handleJoin} className="form-group">
         <label>
+          <User size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
           Your Name
           <input
             type="text"
@@ -48,6 +58,7 @@ function Join({ sendMessage }) {
         </label>
 
         <label>
+          <Hash size={14} style={{ marginRight: 6, verticalAlign: "middle" }} />
           Room ID
           <input
             type="text"
@@ -71,7 +82,8 @@ function Join({ sendMessage }) {
               checked={formData.role === "player"}
               onChange={handleInputChange}
             />
-            🎮 Player
+            <Gamepad2 size={28} />
+            Player
           </label>
           <label
             className={`role-option ${formData.role === "host" ? "active" : ""}`}
@@ -83,11 +95,13 @@ function Join({ sendMessage }) {
               checked={formData.role === "host"}
               onChange={handleInputChange}
             />
-            👑 Host
+            <Crown size={28} />
+            Host
           </label>
         </div>
 
         <button type="submit" className="btn-primary">
+          <LogIn size={18} />
           Enter Room
         </button>
       </form>

@@ -40,8 +40,21 @@ function reducer(state, action) {
       };
     case "SET_VOTED":
       return { ...state, hasVoted: true };
-    case "RESET":
-      return initialState;
+    case "CLEAR_VOTE":
+      return { ...state, hasVoted: false };
+    case "LEAVE_ROOM":
+      return {
+        ...state,
+        roomId: "",
+        name: "",
+        role: null,
+        hasJoined: false,
+        question: null,
+        counts: [],
+        totalVotes: 0,
+        hasVoted: false,
+        error: null,
+      };
     default:
       return state;
   }

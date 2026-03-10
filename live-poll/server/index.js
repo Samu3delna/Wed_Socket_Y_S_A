@@ -10,7 +10,7 @@ const wss = new WebSocket.Server({ server });
  *   question: { id, text, options[] } | null,
  *   counts: number[],
  *   total: number,
- *   votedBy: Set<string>  // name-based for simplicity
+ *   votedBy: Map<string, number>  // key -> optionIndex
  *   clients: Set<WebSocket>
  * }
  */
@@ -22,7 +22,7 @@ function getRoom(roomId) {
       question: null,
       counts: [],
       total: 0,
-      votedBy: new Set(),
+      votedBy: new Map(),
       clients: new Set(),
     });
   }
@@ -105,7 +105,7 @@ wss.on("connection", (ws) => {
       room.question = { id: q.id, text: q.text, options: q.options };
       room.counts = new Array(q.options.length).fill(0);
       room.total = 0;
-      room.votedBy = new Set(); // reset votos para nueva pregunta
+      room.votedBy = new Map(); // reset votos para nueva pregunta
 
       return broadcast(roomId, roomState(roomId));
     }
@@ -126,11 +126,36 @@ wss.on("connection", (ws) => {
       if (room.votedBy.has(key))
         return safeSend(ws, errorMsg("Ya votaste en esta pregunta."));
 
-      room.votedBy.add(key);
+      room.votedBy.set(key, optionIndex);
       room.counts[optionIndex] += 1;
       room.total += 1;
 
       return broadcast(roomId, roomState(roomId));
+    }
+
+    if (type === "CLEAR_VOTE") {
+      const { questionId, name } = payload;
+      if (!room.question)
+        return safeSend(ws, errorMsg("No hay pregunta activa."));
+      if (questionId !== room.question.id)
+        return safeSend(ws, errorMsg("QuestionId no coincide."));
+      if (!name) return safeSend(ws, errorMsg("Nombre requerido."));
+
+      const key = `${roomId}:${room.question.id}:${name.trim().toLowerCase()}`;
+      if (room.votedBy.has(key)) {
+        const prevOption = room.votedBy.get(key);
+        room.votedBy.delete(key);
+        room.counts[prevOption] -= 1;
+        room.total -= 1;
+        return broadcast(roomId, roomState(roomId));
+      }
+      return;
+    }
+
+    if (type === "LEAVE_ROOM") {
+      room.clients.delete(ws);
+      ws.meta = { roomId: null, name: null, role: null };
+      return;
     }
 
     return safeSend(ws, errorMsg("Tipo de mensaje no soportado."));

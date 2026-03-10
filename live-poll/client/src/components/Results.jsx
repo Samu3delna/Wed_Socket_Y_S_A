@@ -7,10 +7,28 @@ import {
   Hourglass,
   Users2,
   Trophy,
+  RefreshCw,
+  LogOut,
 } from "lucide-react";
 
 function Results({ sendMessage }) {
   const { state, dispatch } = useStore();
+
+  const handleClearVote = () => {
+    sendMessage("CLEAR_VOTE", {
+      roomId: state.roomId,
+      questionId: state.question.id,
+      name: state.name,
+    });
+    dispatch({ type: "CLEAR_VOTE" });
+  };
+
+  const handleLeaveRoom = () => {
+    sendMessage("LEAVE_ROOM", {
+      roomId: state.roomId,
+    });
+    dispatch({ type: "LEAVE_ROOM" });
+  };
 
   const handleVote = (idx) => {
     if (state.hasVoted) return;
@@ -33,6 +51,18 @@ function Results({ sendMessage }) {
             <Users2 size={14} />
             Room: {state.roomId} • {state.name}
           </p>
+          <button
+            className="btn-secondary"
+            onClick={handleLeaveRoom}
+            style={{
+              marginTop: "2rem",
+              width: "fit-content",
+              padding: "0.5rem 1rem",
+            }}
+          >
+            <LogOut size={16} />
+            Leave Room
+          </button>
         </div>
       </div>
     );
@@ -110,6 +140,41 @@ function Results({ sendMessage }) {
           Total Participation: <strong>{state.totalVotes}</strong>
         </span>
       </div>
+
+      {state.role === "player" && (
+        <div
+          style={{
+            marginTop: "1.5rem",
+            display: "flex",
+            gap: "1rem",
+            justifyContent: "center",
+          }}
+        >
+          {state.hasVoted && (
+            <button
+              className="btn-secondary"
+              onClick={handleClearVote}
+              style={{ width: "fit-content", padding: "0.5rem 1rem" }}
+            >
+              <RefreshCw size={16} />
+              Revote
+            </button>
+          )}
+          <button
+            className="btn-secondary"
+            onClick={handleLeaveRoom}
+            style={{
+              width: "fit-content",
+              padding: "0.5rem 1rem",
+              borderColor: "rgba(229, 115, 115, 0.4)",
+              color: "#ef9a9a",
+            }}
+          >
+            <LogOut size={16} />
+            Leave Room
+          </button>
+        </div>
+      )}
     </div>
   );
 }

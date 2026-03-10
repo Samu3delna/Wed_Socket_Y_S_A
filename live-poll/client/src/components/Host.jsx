@@ -9,10 +9,11 @@ import {
   MessageSquare,
   ListOrdered,
   DoorOpen,
+  LogOut,
 } from "lucide-react";
 
 function Host({ sendMessage }) {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState(["", "", ""]);
   const [localError, setLocalError] = useState("");
@@ -21,6 +22,13 @@ function Host({ sendMessage }) {
     const newOptions = [...options];
     newOptions[idx] = val;
     setOptions(newOptions);
+  };
+
+  const handleLeaveRoom = () => {
+    sendMessage("LEAVE_ROOM", {
+      roomId: state.roomId,
+    });
+    dispatch({ type: "LEAVE_ROOM" });
   };
 
   const addOption = () => {
@@ -130,6 +138,15 @@ function Host({ sendMessage }) {
         <button className="btn-primary mt-4" onClick={handleCreatePoll}>
           <Send size={18} />
           Publish Poll
+        </button>
+
+        <button
+          className="btn-secondary mt-4"
+          onClick={handleLeaveRoom}
+          style={{ borderColor: "rgba(229, 115, 115, 0.4)", color: "#ef9a9a" }}
+        >
+          <LogOut size={16} />
+          Leave Room
         </button>
       </div>
     </div>

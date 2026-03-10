@@ -11,9 +11,12 @@ import {
   DoorOpen,
   LogOut,
 } from "lucide-react";
+import { t } from "../i18n";
 
 function Host({ sendMessage }) {
   const { state, dispatch } = useStore();
+  const lang = state.language || "en";
+  const dict = t[lang];
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState(["", "", ""]);
   const [localError, setLocalError] = useState("");
@@ -68,14 +71,14 @@ function Host({ sendMessage }) {
     <div className="card glass-effect host-card slide-in">
       <h3>
         <Settings size={20} />
-        Host Panel
+        {dict.hostPanel}
       </h3>
       <p>
         <DoorOpen
           size={14}
           style={{ marginRight: 4, verticalAlign: "middle" }}
         />
-        Room: <strong>{state.roomId}</strong>
+        {dict.room} <strong>{state.roomId}</strong>
       </p>
 
       {localError && (
@@ -91,12 +94,12 @@ function Host({ sendMessage }) {
             size={14}
             style={{ marginRight: 6, verticalAlign: "middle" }}
           />
-          Question
+          {dict.questionLabel}
           <input
             type="text"
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
-            placeholder="What is your favorite color?"
+            placeholder={dict.questionPlaceholder}
           />
         </label>
 
@@ -105,7 +108,7 @@ function Host({ sendMessage }) {
             size={14}
             style={{ marginRight: 6, verticalAlign: "middle" }}
           />
-          Options (2-4)
+          {dict.optionsLabel}
         </label>
         <div className="options-list">
           {options.map((opt, idx) => (
@@ -114,7 +117,7 @@ function Host({ sendMessage }) {
                 type="text"
                 value={opt}
                 onChange={(e) => handleOptionChange(idx, e.target.value)}
-                placeholder={`Option ${idx + 1}`}
+                placeholder={`${dict.optionPlaceholder || "Option"} ${idx + 1}`}
               />
               {options.length > 2 && (
                 <button
@@ -131,13 +134,13 @@ function Host({ sendMessage }) {
         {options.length < 4 && (
           <button className="btn-secondary" onClick={addOption}>
             <Plus size={16} />
-            Add Option
+            {dict.addOption}
           </button>
         )}
 
         <button className="btn-primary mt-4" onClick={handleCreatePoll}>
           <Send size={18} />
-          Publish Poll
+          {dict.publish}
         </button>
 
         <button
@@ -146,7 +149,7 @@ function Host({ sendMessage }) {
           style={{ borderColor: "rgba(229, 115, 115, 0.4)", color: "#ef9a9a" }}
         >
           <LogOut size={16} />
-          Leave Room
+          {dict.leaveRoom}
         </button>
       </div>
     </div>

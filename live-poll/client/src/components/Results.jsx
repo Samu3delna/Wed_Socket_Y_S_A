@@ -10,9 +10,12 @@ import {
   RefreshCw,
   LogOut,
 } from "lucide-react";
+import { t } from "../i18n";
 
 function Results({ sendMessage }) {
   const { state, dispatch } = useStore();
+  const lang = state.language || "en";
+  const dict = t[lang];
 
   const handleClearVote = () => {
     sendMessage("CLEAR_VOTE", {
@@ -46,10 +49,10 @@ function Results({ sendMessage }) {
       <div className="card glass-effect results-card slide-in">
         <div className="waiting-container">
           <Hourglass size={48} className="animate-pulse-slow icon-muted" />
-          <h3 className="waiting-pulse">Waiting for host...</h3>
+          <h3 className="waiting-pulse">{dict.waiting}</h3>
           <p className="room-info-sub">
             <Users2 size={14} />
-            Room: {state.roomId} • {state.name}
+            {dict.room} {state.roomId} • {state.name}
           </p>
           <button
             className="btn-secondary"
@@ -61,7 +64,7 @@ function Results({ sendMessage }) {
             }}
           >
             <LogOut size={16} />
-            Leave Room
+            {dict.leaveRoom}
           </button>
         </div>
       </div>
@@ -80,14 +83,14 @@ function Results({ sendMessage }) {
       {state.role === "player" && !state.hasVoted && (
         <p className="instruction">
           <MousePointer2 size={16} className="animate-bounce-subtle" />
-          Click an option to cast your vote
+          {dict.clickToVote}
         </p>
       )}
 
       {state.role === "player" && state.hasVoted && (
         <p className="success-msg fade-in">
           <BadgeCheck size={20} />
-          Your vote has been recorded!
+          {dict.voteRecorded}
         </p>
       )}
 
@@ -107,7 +110,7 @@ function Results({ sendMessage }) {
               <div className="option-header">
                 <span className="option-name">{opt}</span>
                 <span className="option-count">
-                  {count} votes ({percentage}%)
+                  {count} {dict.votesInfo} ({percentage}%)
                 </span>
               </div>
 
@@ -125,7 +128,7 @@ function Results({ sendMessage }) {
                 {state.role === "player" && !state.hasVoted && (
                   <div className="vote-overlay">
                     <Vote size={20} />
-                    <span>Confirm Vote</span>
+                    <span>{dict.confirmVote}</span>
                   </div>
                 )}
               </div>
@@ -137,7 +140,7 @@ function Results({ sendMessage }) {
       <div className="total-votes-footer">
         <Users2 size={18} />
         <span>
-          Total Participation: <strong>{state.totalVotes}</strong>
+          {dict.totalParticipation} <strong>{state.totalVotes}</strong>
         </span>
       </div>
 
@@ -157,7 +160,7 @@ function Results({ sendMessage }) {
               style={{ width: "fit-content", padding: "0.5rem 1rem" }}
             >
               <RefreshCw size={16} />
-              Revote
+              {dict.revote}
             </button>
           )}
           <button
@@ -171,7 +174,7 @@ function Results({ sendMessage }) {
             }}
           >
             <LogOut size={16} />
-            Leave Room
+            {dict.leaveRoom}
           </button>
         </div>
       )}

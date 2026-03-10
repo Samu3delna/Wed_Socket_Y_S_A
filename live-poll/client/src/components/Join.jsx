@@ -8,9 +8,13 @@ import {
   LogIn,
   AlertTriangle,
 } from "lucide-react";
+import { t } from "../i18n";
 
 function Join({ sendMessage }) {
-  const { dispatch } = useStore();
+  const { state, dispatch } = useStore();
+  const lang = state.language || "en";
+  const dict = t[lang];
+
   const [formData, setFormData] = useState({
     name: "",
     roomId: "",
@@ -36,7 +40,7 @@ function Join({ sendMessage }) {
     <div className="card glass-effect join-card fade-in">
       <h2>
         <ShieldCheck size={28} className="accent-icon" />
-        Join Room
+        {dict.title}
       </h2>
       <p>Configure your identity to start interacting.</p>
 
@@ -51,14 +55,18 @@ function Join({ sendMessage }) {
         <label>
           <div className="label-with-icon">
             <User2 size={16} />
-            <span>Display Name</span>
+            <span>{dict.nameLabel}</span>
           </div>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            placeholder="Introduce your name"
+            placeholder={
+              formData.role === "host"
+                ? dict.hostPlaceholder
+                : dict.playerPlaceholder
+            }
             maxLength={20}
           />
         </label>
@@ -66,14 +74,14 @@ function Join({ sendMessage }) {
         <label>
           <div className="label-with-icon">
             <Hash size={16} />
-            <span>Room Access Code</span>
+            <span>{dict.roomLabel}</span>
           </div>
           <input
             type="text"
             name="roomId"
             value={formData.roomId}
             onChange={handleInputChange}
-            placeholder="Enter Room ID"
+            placeholder={dict.roomPlaceholder}
             maxLength={10}
           />
         </label>
@@ -90,7 +98,7 @@ function Join({ sendMessage }) {
               onChange={handleInputChange}
             />
             <Gamepad2 size={32} />
-            <span>Player</span>
+            <span>{dict.player}</span>
           </label>
           <label
             className={`role-option ${formData.role === "host" ? "active" : ""}`}
@@ -103,12 +111,12 @@ function Join({ sendMessage }) {
               onChange={handleInputChange}
             />
             <ShieldCheck size={32} />
-            <span>Host</span>
+            <span>{dict.host}</span>
           </label>
         </div>
 
         <button type="submit" className="btn-primary">
-          <span>Connect Now</span>
+          <span>{dict.connect}</span>
           <LogIn size={20} />
         </button>
       </form>

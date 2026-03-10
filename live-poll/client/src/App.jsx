@@ -4,13 +4,16 @@ import { useWebSocket } from "./hooks/useWebSocket";
 import Join from "./components/Join";
 import Host from "./components/Host";
 import Results from "./components/Results";
-import { Sparkles, Wifi, WifiOff, Loader2 } from "lucide-react";
+import { Sparkles, Wifi, WifiOff, Loader2, Globe } from "lucide-react";
+import { t } from "./i18n";
 import "./index.css";
 
 const WS_URL = "ws://localhost:8080";
 
 function App() {
   const { state, dispatch } = useStore();
+  const lang = state.language || "en";
+  const dict = t[lang];
 
   const handleMessage = useCallback(
     (msg) => {
@@ -79,26 +82,52 @@ function App() {
   const getStatusIcon = () => {
     switch (state.connectionState) {
       case "Connected":
-        return <Wifi size={14} className="text-success" />;
+        return {
+          icon: <Wifi size={14} className="text-success" />,
+          text: dict.connected,
+        };
       case "Connecting":
-        return <Loader2 size={14} className="animate-spin" />;
+        return {
+          icon: <Loader2 size={14} className="animate-spin" />,
+          text: dict.connecting,
+        };
       default:
-        return <WifiOff size={14} className="text-danger" />;
+        return {
+          icon: <WifiOff size={14} className="text-danger" />,
+          text: dict.offline,
+        };
     }
   };
+
+  const statusInfo = getStatusIcon();
 
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>
           <Sparkles size={32} className="logo-icon" />
-          Live Poll
+          {dict.title}
         </h1>
-        <div
-          className={`status-badge status-${state.connectionState?.toLowerCase()}`}
-        >
-          {getStatusIcon()}
-          <span>{state.connectionState}</span>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <button
+            onClick={() => dispatch({ type: "TOGGLE_LANGUAGE" })}
+            className="btn-secondary"
+            style={{
+              padding: "0.2rem 0.6rem",
+              fontSize: "0.85rem",
+              width: "auto",
+            }}
+          >
+            <Globe size={14} />
+            {lang.toUpperCase()}
+          </button>
+
+          <div
+            className={`status-badge status-${state.connectionState?.toLowerCase()}`}
+          >
+            {statusInfo.icon}
+            <span>{statusInfo.text}</span>
+          </div>
         </div>
       </header>
 

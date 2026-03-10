@@ -11,6 +11,7 @@ const initialState = {
   totalVotes: 0,
   error: null,
   hasVoted: false,
+  language: "en", // default language
 };
 
 function reducer(state, action) {
@@ -42,6 +43,8 @@ function reducer(state, action) {
       return { ...state, hasVoted: true };
     case "CLEAR_VOTE":
       return { ...state, hasVoted: false };
+    case "TOGGLE_LANGUAGE":
+      return { ...state, language: state.language === "en" ? "es" : "en" };
     case "LEAVE_ROOM":
       return {
         ...state,

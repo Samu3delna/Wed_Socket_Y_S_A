@@ -1,96 +1,115 @@
-# 🌿 Live Poll — Real-Time Voting System
+# Live Poll - Real-Time Voting System
 
-Una aplicación de encuestas en tiempo real construida con **WebSockets**, **React** y **Node.js**. Diseñada con una estética natural "Nature Green" y una interfaz premium.
+A real-time polling application built with WebSockets, React, and Node.js. Designed with a premium "Nature Green" aesthetic and a highly interactive, responsive interface.
 
 ---
 
-## 🚀 Cómo ejecutar el proyecto (Localmente)
+## Features
 
-### 1. Clonar e Instalar dependencias
+- **Real-Time Communication:** Instantaneous data updates across all connected clients via WebSockets (ws library), completely eliminating the need for page reloads.
+- **Role-Based Architecture:** Distinct user workflows for Hosts (poll creators) and Players (voters).
+- **Room Management:** Secure and isolated sessions using unique Room ID codes.
+- **Dynamic Voting System:**
+  - Real-time animated progress bars.
+  - Ability for Players to clear their vote and revote dynamically.
+  - Automatic winner highlighting when participation starts.
+- **Internationalization (i18n):** Native, zero-dependency bilingual support (English and Spanish) via a global state toggle switch.
+- **Premium UI/UX:**
+  - Glassmorphism effects with subtle CSS animations (pulse, spin, bounce).
+  - Modern typography using Inter and Outfit fonts.
+  - Vector iconography exclusively powered by lucide-react (no emojis).
 
-Primero, asegúrate de tener instaladas las dependencias en ambas carpetas:
+---
+
+## Technical Stack
+
+- **Frontend:** React, Vite, Context API / useReducer (State Management), lucide-react (Icons).
+- **Backend:** Node.js, `ws` (WebSockets).
+- **Styling:** Custom Vanilla CSS with CSS Variables.
+
+---
+
+## How to Run the Project (Locally)
+
+### 1. Requirements
+
+Ensure you have Node.js installed on your system.
+
+### 2. Install Dependencies
+
+You must install the packages for both the client side and the server side. Open your terminal and run the following commands from the project root directory:
 
 ```bash
-# Instalar en el Cliente
-cd live-poll/client
+# Install Client Dependencies
+cd client
 npm install
 
-# Instalar en el Servidor
+# Install Server Dependencies
 cd ../server
 npm install
 ```
 
-### 2. Ejecutar en Modo Desarrollo (Recomendado para cambios)
+### 3. Start the Application
 
-Necesitas abrir **dos terminales**:
+You will need to run the client and the server simultaneously. Open two separate terminal windows or tabs:
 
-- **Terminal 1 (Backend):**
-  ```bash
-  cd live-poll/server
-  npm start  # Corre en el puerto 8080
-  ```
-- **Terminal 2 (Frontend):**
-  ```bash
-  cd live-poll/client
-  npm run dev  # Corre en el puerto 5173 o 5174
-  ```
+**Terminal 1 (Backend Server):**
 
----
+```bash
+cd server
+npm start
+```
 
-## 🛠️ Ejecución en Modo Producción
+Note: The WebSocket server will start on port 8080 (ws://localhost:8080).
 
-Para probar la app tal cual como funcionaría en la nube (un solo puerto para todo):
+**Terminal 2 (Frontend Client):**
 
-1.  **Construir el frontend:**
-    ```bash
-    cd live-poll/client
-    npm run build
-    ```
-2.  **Arrancar el servidor unificado:**
-    ```bash
-    cd ../server
-    node index.js
-    ```
-3.  Abre tu navegador en `http://localhost:8080`.
+```bash
+cd client
+npm run dev
+```
+
+Note: This will start the Vite development server (usually on port 5173).
 
 ---
 
-## 🔄 Flujo de Uso (Ejemplo)
+## Core Application Flow (Example)
 
-La aplicación soporta múltiples salas en tiempo real. Sigue estos pasos para probar el flujo completo:
+Follow these steps to test the complete real-time architecture:
 
-### Paso 1: Entrar como Host (Anfitrión)
+### Step 1: Initialize the Host
 
-1.  Abre la app e ingresa tu nombre (ej. "Admin").
-2.  Ingresa un ID de sala único (ej. `Boda2026`).
-3.  Selecciona el rol **👑 Host** y dale a "Enter Room".
-4.  **Acción:** Escribe una pregunta (ej. "¿Cuál es el mejor postre?") y añade las opciones (ej. "Pastel", "Helado", "Fruta"). Dale a **🚀 Publish Poll**.
+1. Open the application in your browser.
+2. Enter your Name (e.g. "Administrator").
+3. Enter a unique Room ID (e.g. "Boda2026").
+4. Select the "Host" role and click "Connect Now".
+5. In the Host Panel, input a question (e.g. "What is the best dessert?").
+6. Provide up to 4 options (e.g. "Cake", "Ice Cream", "Fruit").
+7. Click "Publish Poll" to broadcast the state to the room.
 
-### Paso 2: Entrar como Player (Votante)
+### Step 2: Join as a Player (Voter)
 
-1.  En otra pestaña (o desde otro dispositivo), ingresa tu nombre (ej. "Daniel").
-2.  **Importante:** Ingresa el **mismo ID de sala** (`Boda2026`).
-3.  Selecciona el rol **🎮 Player** y dale a "Enter Room".
-4.  **Acción:** Verás la pregunta que el Host publicó. Haz clic en una de las barras para votar.
+1. Open a new incognito window, tab, or use a completely different device.
+2. Enter your Name (e.g. "Voter 1").
+3. Enter the exact same Room ID used by the Host ("Boda2026").
+4. Select the "Player" role and click "Connect Now".
+5. Upon connecting, the system will instantly push the current active poll to your screen.
 
-### Paso 3: Ver Resultados en Vivo
+### Step 3: Interactive Voting
 
-- Tanto el Host como los Players verán cómo las barras de resultados se actualizan **instantáneamente** mediante WebSockets sin necesidad de recargar la página.
-
----
-
-## 🎨 Paleta de Colores (Nature Green)
-
-- **Sage:** `#A3B18A`
-- **Cream:** `#DAD7CD`
-- **Forest:** `#588157`
-- **Dark Green:** `#3A5A40`
-- **Deepest Green:** `#344E41`
+- Click on any option to cast your vote.
+- Notice the animated progress bars update instantly on both the Host's screen and the Player's screen.
+- As a Player, you can click "Revote" to retract your current selection and choose a different option. The server will automatically adjust the counts.
+- Click "Leave Room" at any time to return to the Connection screen.
 
 ---
 
-## 📦 Tecnologías
+## Color Palette (Nature Green Theme)
 
-- **Frontend:** React, Vite, Lucide Icons.
-- **Backend:** Node.js, WebSocket (`ws`).
-- **Estilos:** Vanilla CSS con Glassmorphism y animaciones.
+The application enforces strict design guidelines based on the following hex codes:
+
+- Sage: #A3B18A
+- Cream: #DAD7CD
+- Forest: #588157
+- Dark Green: #3A5A40
+- Deepest Green: #344E41

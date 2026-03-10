@@ -7,9 +7,7 @@ import Results from "./components/Results";
 import { Sparkles, Wifi, WifiOff, Loader2 } from "lucide-react";
 import "./index.css";
 
-const WS_URL = import.meta.env.PROD
-  ? `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.host}`
-  : "ws://localhost:8080";
+const WS_URL = "ws://localhost:8080";
 
 function App() {
   const { state, dispatch } = useStore();
